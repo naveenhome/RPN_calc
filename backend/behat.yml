@@ -1,0 +1,19 @@
+default:
+  suites:
+    p0:
+      paths:
+        - ../specs/features
+      contexts:
+        - Features\Bootstrap\FeatureContext
+      filters:
+        tags: "~@p1"
+
+p1:
+  suites:
+    p1:
+      paths:
+        - ../specs/features
+      contexts:
+        - Features\Bootstrap\FeatureContext
+      filters:
+        tags: "@p1"

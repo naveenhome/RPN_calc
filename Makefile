@@ -15,6 +15,12 @@ test:
 	cd frontend && npm run test:ci
 	cd backend && composer test
 
+bdd:
+	cd backend && composer bdd
+
+bdd-p1:
+	cd backend && composer bdd:p1
+
 test-coverage:
 	cd frontend && npm run test:coverage
 	cd backend && composer test:coverage

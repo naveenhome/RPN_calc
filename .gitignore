@@ -14,4 +14,8 @@ backend/.phpunit.cache/
 backend/coverage/
 
 .idea/
+.agents/
+.codex/
+.vscode/
 .vscode/*.log
+skills-lock.json

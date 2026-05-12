@@ -23,12 +23,21 @@ final class CalculateExpressionTest extends TestCase
             ->assertJson([
                 'expression' => '3 4 +',
                 'result' => '7',
+                'error_message' => null,
                 'status' => Calculation::STATUS_SUCCESS,
+            ])
+            ->assertJsonStructure([
+                'id',
+                'expression',
+                'result',
+                'error_message',
+                'status',
             ]);
 
         $this->assertDatabaseHas('calculations', [
             'expression' => '3 4 +',
             'result' => '7',
+            'error_message' => null,
             'status' => Calculation::STATUS_SUCCESS,
         ]);
     }
@@ -43,13 +52,73 @@ final class CalculateExpressionTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 'message' => 'Division by zero is undefined',
+                'code' => 'EVALUATION_ERROR',
+                'expression' => '5 0 /',
+                'result' => null,
+                'error_message' => 'Division by zero is undefined',
                 'status' => Calculation::STATUS_ERROR,
+            ])
+            ->assertJsonStructure([
+                'message',
+                'code',
+                'id',
+                'expression',
+                'result',
+                'error_message',
+                'status',
             ]);
 
         $this->assertDatabaseHas('calculations', [
             'expression' => '5 0 /',
+            'result' => null,
             'error_message' => 'Division by zero is undefined',
             'status' => Calculation::STATUS_ERROR,
+        ]);
+    }
+
+    /**
+     * @dataProvider invalidRequestProvider
+     */
+    public function test_it_rejects_invalid_requests_without_storing_history(array $payload): void
+    {
+        $response = $this->postJson('/api/calculate', $payload);
+
+        $response
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['expression']);
+
+        $this->assertDatabaseCount('calculations', 0);
+    }
+
+    /**
+     * @return array<string, array{payload: array<string, mixed>}>
+     */
+    public static function invalidRequestProvider(): array
+    {
+        return [
+            'missing expression' => ['payload' => []],
+            'blank expression' => ['payload' => ['expression' => '   ']],
+        ];
+    }
+
+    public function test_it_trims_the_expression_before_evaluation_and_persistence(): void
+    {
+        $response = $this->postJson('/api/calculate', [
+            'expression' => '  3 4 +  ',
+        ]);
+
+        $response
+            ->assertOk()
+            ->assertJson([
+                'expression' => '3 4 +',
+                'result' => '7',
+                'status' => Calculation::STATUS_SUCCESS,
+            ]);
+
+        $this->assertDatabaseHas('calculations', [
+            'expression' => '3 4 +',
+            'result' => '7',
+            'status' => Calculation::STATUS_SUCCESS,
         ]);
     }
 }

@@ -13,6 +13,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
+        "behat/behat": "^3.14",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
@@ -29,6 +30,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Features\\Bootstrap\\": "features/bootstrap/",
             "Tests\\": "tests/"
         }
     },
@@ -48,6 +50,12 @@
         ],
         "test": [
             "@php artisan test"
+        ],
+        "bdd": [
+            "behat --tags='~@p1'"
+        ],
+        "bdd:p1": [
+            "behat --tags='@p1'"
         ],
         "test:coverage": [
             "phpdbg -qrr artisan test --coverage"
