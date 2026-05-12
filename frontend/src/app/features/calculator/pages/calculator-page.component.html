@@ -1,0 +1,70 @@
+<section class="calculator-grid">
+  <article class="panel workspace-panel">
+    <div class="panel-header">
+      <div>
+        <p class="panel-kicker">Calculator Workspace</p>
+        <h2 class="panel-title">Evaluate an expression instantly</h2>
+      </div>
+      <p class="panel-description">
+        Enter a space-delimited RPN expression and submit it to the Laravel API. The interface is
+        optimized for fast keyboard use, clear results, and trustworthy error feedback.
+      </p>
+    </div>
+
+    <form class="calculator-form" (ngSubmit)="submit()">
+      <label class="field-label" for="expression">RPN expression</label>
+      <input
+        id="expression"
+        class="expression-input"
+        type="text"
+        [formControl]="expression"
+        placeholder="Example: 3 4 + 2 *"
+        aria-describedby="expression-help expression-examples"
+      />
+      <small class="field-hint" id="expression-help">
+        Space-delimited tokens only. Example: <code>5 1 2 + 4 * + 3 -</code>
+      </small>
+      <small class="field-error" *ngIf="expression.invalid && expression.touched">
+        Expression is required.
+      </small>
+
+      <div class="button-row">
+        <button class="btn btn-primary" type="submit" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Calculating...' : 'Calculate' }}
+        </button>
+        <span class="operators-pill">Operators: {{ supportedOperators.join(' ') }}</span>
+      </div>
+    </form>
+
+    <div *ngIf="result()" class="result-card" aria-live="polite">
+      <p class="result-label">Latest result</p>
+      <p class="result-value">{{ result() }}</p>
+    </div>
+
+    <div *ngIf="errorMessage()" class="error-box" aria-live="assertive">
+      {{ errorMessage() }}
+    </div>
+  </article>
+
+  <aside class="panel support-panel">
+    <section class="support-section">
+      <h3 class="support-title">Examples to try</h3>
+      <div class="example-chip-row" id="expression-examples" aria-label="Example expressions">
+        <span class="example-chip">3 4 +</span>
+        <span class="example-chip">3 4 + 2 *</span>
+        <span class="example-chip">2 10 ^</span>
+        <span class="example-chip">75 %</span>
+        <span class="example-chip">5 !</span>
+      </div>
+    </section>
+
+    <section class="support-section">
+      <h3 class="support-title">How it works</h3>
+      <div class="trace-panel" aria-label="RPN evaluation steps">
+        <div class="trace-step">1. Numbers are pushed onto the stack.</div>
+        <div class="trace-step">2. Operators consume operands from the stack.</div>
+        <div class="trace-step">3. The final remaining value is the result.</div>
+      </div>
+    </section>
+  </aside>
+</section>

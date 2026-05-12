@@ -1,0 +1,17 @@
+.DS_Store
+
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+
+backend/vendor/
+backend/storage/*.key
+backend/storage/logs/
+backend/bootstrap/cache/*.php
+backend/public/build/
+backend/.env
+backend/.phpunit.cache/
+backend/coverage/
+
+.idea/
+.vscode/*.log
